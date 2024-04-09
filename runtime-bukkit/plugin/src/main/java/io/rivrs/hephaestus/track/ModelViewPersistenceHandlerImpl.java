@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.hephaestus.bukkit.plugin.track;
+package io.rivrs.hephaestus.track;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 import team.unnamed.hephaestus.Model;
 import team.unnamed.hephaestus.bukkit.ModelView;
-import team.unnamed.hephaestus.bukkit.plugin.ModelRegistry;
+import io.rivrs.hephaestus.registry.ModelRegistry;
 import team.unnamed.hephaestus.bukkit.track.ModelViewPersistenceHandler;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.Objects.requireNonNull;
 
 public final class ModelViewPersistenceHandlerImpl implements ModelViewPersistenceHandler {
-    private static final NamespacedKey MODEL_KEY = new NamespacedKey("hephaestus_test_plugin", "model");
+    private static final NamespacedKey MODEL_KEY = new NamespacedKey("hephaestus_plugin", "model");
 
     private final ModelRegistry modelRegistry;
 
