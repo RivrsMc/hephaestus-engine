@@ -23,22 +23,21 @@
  */
 package io.rivrs.hephaestus.track;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import io.rivrs.hephaestus.registry.ModelRegistry;
+import static java.util.Objects.requireNonNull;
 import team.unnamed.hephaestus.Model;
 import team.unnamed.hephaestus.bukkit.ModelView;
-import io.rivrs.hephaestus.registry.ModelRegistry;
 import team.unnamed.hephaestus.bukkit.track.ModelViewPersistenceHandler;
 
-import java.util.concurrent.CompletableFuture;
-
-import static java.util.Objects.requireNonNull;
-
 public final class ModelViewPersistenceHandlerImpl implements ModelViewPersistenceHandler {
-    private static final NamespacedKey MODEL_KEY = new NamespacedKey("hephaestus_plugin", "model");
+    private static final NamespacedKey MODEL_KEY = new NamespacedKey("hephaestus", "model");
 
     private final ModelRegistry modelRegistry;
 

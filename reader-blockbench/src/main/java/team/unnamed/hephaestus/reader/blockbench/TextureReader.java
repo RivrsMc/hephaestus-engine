@@ -23,18 +23,20 @@
  */
 package team.unnamed.hephaestus.reader.blockbench;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.kyori.adventure.key.InvalidKeyException;
-import org.intellij.lang.annotations.Subst;
-import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.base.Writable;
-import team.unnamed.hephaestus.asset.TextureAsset;
-import team.unnamed.hephaestus.reader.ModelFormatException;
-
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.NotNull;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import net.kyori.adventure.key.InvalidKeyException;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.hephaestus.asset.TextureAsset;
+import team.unnamed.hephaestus.reader.ModelFormatException;
 
 final class TextureReader {
 
@@ -54,13 +56,12 @@ final class TextureReader {
             final JsonObject textureObjectNode = textureNode.getAsJsonObject();
 
             final String id = textureObjectNode.get("id").getAsString();
-            @Subst("texture.png")
-            final String name = textureObjectNode.get("name").getAsString();
+            @Subst("texture.png") final String name = KeyUtils.removeIllegalCharacters(textureObjectNode.get("name").getAsString());
             final String source = textureObjectNode.get("source").getAsString();
 
             if (!source.startsWith(BASE_64_PREFIX)) {
                 throw new ModelFormatException("Texture '" + name + "' of '" + modelData.name + "' doesn't" +
-                        " contain a valid texture source. Must start with a Base64 prefix");
+                                               " contain a valid texture source. Must start with a Base64 prefix");
             }
 
             final Writable textureData = Writable.bytes(Base64.getDecoder().decode(source.substring(BASE_64_PREFIX.length())));
@@ -70,7 +71,7 @@ final class TextureReader {
                 texture = TextureAsset.textureAsset(id, name, textureData);
             } catch (final InvalidKeyException e) {
                 throw new ModelFormatException("Texture '" + name + "' of '" + modelData.name + "' has" +
-                        " an invalid name.", e);
+                                               " an invalid name.", e);
             }
 
             textures.put(id, texture);

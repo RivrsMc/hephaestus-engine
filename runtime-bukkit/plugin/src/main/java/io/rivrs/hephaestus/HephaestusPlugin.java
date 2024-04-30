@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,33 +58,36 @@ public final class HephaestusPlugin extends JavaPlugin {
         this.engine = BukkitModelEngine_v1_20_R3.create(this, new ModelViewPersistenceHandlerImpl(registry));
 
         Path dataFolder = this.getDataFolder().toPath();
-        Path modelsFolder = dataFolder.resolve("models");
+        Path modelsFolder = dataFolder.resolve("blueprints");
 
         // Load model
-        getLogger().info("Loading models...");
+        getLogger().info("Loading blueprints...");
+        AtomicInteger attempted = new AtomicInteger();
         if (!Files.isDirectory(modelsFolder)) {
             try {
                 Files.createDirectories(modelsFolder);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to create models folder", e);
+                throw new RuntimeException("Failed to create blueprints folder", e);
             }
         } else {
-            try (Stream<Path> pathStream = Files.list(modelsFolder)) {
+            try (Stream<Path> pathStream = Files.walk(modelsFolder)) {
                 pathStream.filter(Files::isRegularFile)
                         .filter(path -> path.getFileName().toString().endsWith(".bbmodel"))
                         .forEach(path -> {
+                            attempted.incrementAndGet();
                             try (InputStream input = Files.newInputStream(path)) {
                                 Model model = BBModelReader.blockbench().read(input);
                                 registry.registerModel(model);
-                            } catch (IOException e) {
-                                throw new RuntimeException("Failed to load model " + path, e);
+                            } catch (Exception e) {
+                                getLogger().severe("Failed to load blueprint " + path + ": " + e.getMessage());
+                                e.printStackTrace();
                             }
                         });
             } catch (IOException e) {
-                throw new RuntimeException("Failed to load models", e);
+                throw new RuntimeException("Failed to load blueprints", e);
             }
         }
-        getLogger().info("Loaded %d models.".formatted(registry.models().size()));
+        getLogger().info("Loaded %d/%d blueprints.".formatted(registry.models().size(), attempted.get()));
 
         // Generate resource pack
         CreativeCentralProvider.get()

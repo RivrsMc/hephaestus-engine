@@ -23,24 +23,25 @@
  */
 package team.unnamed.hephaestus.reader.blockbench;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Map;
+import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.texture.Texture;
+
 import team.unnamed.hephaestus.Model;
 import team.unnamed.hephaestus.ModelDataCursor;
 import team.unnamed.hephaestus.animation.Animation;
 import team.unnamed.hephaestus.asset.ModelAsset;
 import team.unnamed.hephaestus.asset.TextureAsset;
 import team.unnamed.hephaestus.reader.ModelFormatException;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Map;
-import java.util.Objects;
 
 final class BBModelReaderImpl implements BBModelReader {
 
@@ -74,9 +75,9 @@ final class BBModelReaderImpl implements BBModelReader {
         modelData.name = modelName;
 
         // check for box uv
-        if (!GsonUtil.isNullOrAbsent(meta, "box_uv") && meta.get("box_uv").getAsBoolean()) {
-            throw new ModelFormatException("Model '" + modelName + "' uses box UV, which is not supported.");
-        }
+//        if (!GsonUtil.isNullOrAbsent(meta, "box_uv") && meta.get("box_uv").getAsBoolean()) {
+//            throw new ModelFormatException("Model '" + modelName + "' uses box UV, which is not supported.");
+//        }
 
         final JsonObject resolution = json.getAsJsonObject("resolution");
         modelData.textureWidth = resolution.get("width").getAsInt();

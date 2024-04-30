@@ -23,22 +23,6 @@
  */
 package team.unnamed.hephaestus.reader.blockbench;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound;
-import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.hephaestus.animation.Animation;
-import team.unnamed.hephaestus.animation.interpolation.Interpolators;
-import team.unnamed.hephaestus.animation.interpolation.KeyFrameInterpolator;
-import team.unnamed.hephaestus.animation.timeline.KeyFrame;
-import team.unnamed.hephaestus.animation.timeline.KeyFrameBezierAttachment;
-import team.unnamed.hephaestus.animation.timeline.bone.BoneTimeline;
-import team.unnamed.hephaestus.animation.timeline.Timeline;
-import team.unnamed.hephaestus.animation.timeline.effect.EffectsTimeline;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,8 +31,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
+import team.unnamed.creative.base.Vector3Float;
+import team.unnamed.hephaestus.animation.Animation;
+import team.unnamed.hephaestus.animation.interpolation.Interpolators;
+import team.unnamed.hephaestus.animation.interpolation.KeyFrameInterpolator;
+import team.unnamed.hephaestus.animation.timeline.KeyFrame;
+import team.unnamed.hephaestus.animation.timeline.KeyFrameBezierAttachment;
+import team.unnamed.hephaestus.animation.timeline.Timeline;
+import team.unnamed.hephaestus.animation.timeline.bone.BoneTimeline;
+import team.unnamed.hephaestus.animation.timeline.effect.EffectsTimeline;
+
 public final class AnimationReader {
-    
+
     private static final int BEZIER_CURVE_DIVISIONS = Integer.getInteger("hephaestus.bezier_divisions", 200);
     private static final KeyFrameInterpolator<Vector3Float> BEZIER_INTERPOLATOR = Interpolators.bezierVector3Float(BEZIER_CURVE_DIVISIONS);
     private static final int TICKS_PER_SECOND = Integer.getInteger("hephaestus.tps", 20);
@@ -98,7 +98,7 @@ public final class AnimationReader {
 
                 JsonObject animatorJson = animatorEntry.getValue().getAsJsonObject();
                 String boneName = animatorJson.get("name").getAsString();
-                String type = animatorJson.get("type").getAsString();
+                String type = animatorJson.has("type") ? animatorJson.get("type").getAsString() : "bone";
 
                 if (type.equals("effect")) {
                     Map<Integer, List<Sound>> soundsTimeline = new HashMap<>();
@@ -175,24 +175,15 @@ public final class AnimationReader {
                         String interpolation = keyframeJson.has("interpolation")
                                 ? keyframeJson.get("interpolation").getAsString()
                                 : "linear";
-                        KeyFrameInterpolator<Vector3Float> interpolator;
-                        switch (interpolation.toLowerCase()) {
-                            case "bezier":
-                                interpolator = BEZIER_INTERPOLATOR;
-                                break;
-                            case "linear":
-                                interpolator = Interpolators.lerpVector3Float();
-                                break;
-                            case "catmullrom":
-                            case "smooth": // <-- smooth is the displayed name of catmullrom, it is the same
-                                interpolator = Interpolators.catmullRomSplineVector3Float();
-                                break;
-                            case "step":
-                                interpolator = Interpolators.stepVector3Float();
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Unsupported interpolation type: '" + interpolation + "'");
-                        }
+                        KeyFrameInterpolator<Vector3Float> interpolator = switch (interpolation.toLowerCase()) {
+                            case "bezier" -> BEZIER_INTERPOLATOR;
+                            case "linear" -> Interpolators.lerpVector3Float();
+                            case "catmullrom", "smooth" -> // <-- smooth is the displayed name of catmullrom, it is the same
+                                    Interpolators.catmullRomSplineVector3Float();
+                            case "step" -> Interpolators.stepVector3Float();
+                            default ->
+                                    throw new IllegalArgumentException("Unsupported interpolation type: '" + interpolation + "'");
+                        };
 
                         final KeyFrame<Vector3Float> keyFrame = new KeyFrame<>(time, value, interpolator);
 

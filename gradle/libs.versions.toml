@@ -1,5 +1,5 @@
 [versions]
-creative = "1.7.2"
+creative = "1.7.1"
 adventure = "4.15.0"
 annotations = "24.1.0"
 mocha = "3.0.0-SNAPSHOT"
@@ -12,9 +12,9 @@ minestom = "7320437640"
 
 
 [libraries]
-creative-api = { group = "team.unnamed", name = "creative-api", version.ref =  "creative" }
+creative-api = { group = "io.rivrs", name = "creative-api", version.ref =  "creative" }
 creative-server = { group = "team.unnamed", name = "creative-server", version.ref = "creative" }
-creative-serializer-minecraft = { group = "team.unnamed", name = "creative-serializer-minecraft", version.ref = "creative" }
+creative-serializer-minecraft = { group = "io.rivrs", name = "creative-serializer-minecraft", version.ref = "creative" }
 
 mocha = { group = "team.unnamed", name = "mocha", version.ref = "mocha" }
 
